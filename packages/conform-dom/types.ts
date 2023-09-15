@@ -98,24 +98,32 @@ export type SubmissionContext = {
 	formData: FormData;
 };
 
-export type Submission<Output, Input = Output> =
+export type Submission<Output> =
 	| {
-			state: 'pending' | 'rejected';
-			report(options?: ReportOptions): SubmissionResult<Input>;
+			status: 'pending' | 'rejected';
+			error: Record<string, string[]>;
+			revise(): SubmissionResult;
 	  }
 	| {
-			state: 'accepted';
+			status: 'accepted';
 			value: Output;
-			report(options?: ReportOptions): SubmissionResult<Input>;
+			reject(
+				options:
+					| {
+							formErrors: string[];
+							fieldErrors?: Record<string, string[]>;
+					  }
+					| {
+							formErrors?: string[];
+							fieldErrors: Record<string, string[]>;
+					  },
+			): SubmissionResult;
+			reset(): SubmissionResult;
 	  };
 
-export type ReportOptions = {
-	resetForm?: boolean;
-};
-
-export type SubmissionResult<Type = any> = {
-	initialValue: Record<keyof Type | string, string | string[]> | null;
-	error: Record<keyof Type | string, string[]>;
-	state: FormState;
-	autoFocus: boolean;
+export type SubmissionResult = {
+	status: 'pending' | 'rejected' | 'accepted';
+	initialValue?: Record<string, string | string[]>;
+	error?: Record<string, string[]>;
+	state?: FormState;
 };

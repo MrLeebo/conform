@@ -22,7 +22,7 @@ export async function action({ request }: ActionArgs) {
 	const formData = await request.formData();
 	const submission = parse(formData, { schema });
 
-	return json(submission.report());
+	return json(submission.revise());
 }
 
 export default function Example() {

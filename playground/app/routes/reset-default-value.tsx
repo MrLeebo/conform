@@ -51,17 +51,11 @@ export async function action({ request }: ActionArgs) {
 		schema,
 	});
 
-	if (submission.state !== 'accepted') {
-		return json(submission.report());
+	if (submission.status !== 'accepted') {
+		return json(submission.revise());
 	}
 
-	// We can also skip sending the submission back to the client on success
-	// As the form value shuold be reset anyway
-	return json(
-		submission.report({
-			resetForm: true,
-		}),
-	);
+	return json(submission.reset());
 }
 
 export default function ExampleForm() {
